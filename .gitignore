@@ -1,0 +1,45 @@
+# --- Secretos / entorno ---
+.env
+.env.*
+!.env.example
+
+# --- Sesión Playwright (cookies de login) ---
+.auth/
+.chrome-debug/
+
+# --- Virtualenv ---
+.venv/
+venv/
+ENV/
+
+# --- Bases de datos locales ---
+*.db
+*.sqlite
+*.sqlite3
+growatt_test.db
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# --- Playwright ---
+.playwright/
+playwright-report/
+test-results/
+
+# --- Datos exportados / artefactos de corridas ---
+data/
+exports/
+*.log
+
+# --- Volcados de reconocimiento (HTML/JSON/PNG con datos de cuenta) ---
+scripts/_recon/
+
+# --- IDE / SO ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
