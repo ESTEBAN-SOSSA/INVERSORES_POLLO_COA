@@ -96,8 +96,11 @@ Invoke-RestMethod "http://127.0.0.1:8001/api/v1/plants/1878757/inverters" -Heade
 # Generación por día (todo 2026)
 Invoke-RestMethod "http://127.0.0.1:8001/api/v1/inverters/ZFEDCA6003/energy?granularity=day&date_from=2026-01-01" -Headers $H
 
-# Detalle 5-min de hoy → 24 horas + 288 muestras (HH:MM:SS + power_w)
+# Detalle 5-min de hoy → 288 puntos planos (reading_date, sample_time HH:MM, power_w)
 Invoke-RestMethod "http://127.0.0.1:8001/api/v1/inverters/ZFEDCA6003/energy?granularity=hour&date_from=2026-05-28" -Headers $H
+
+# Resumen horario (energy_kwh/peak/avg por hora) en vez de las 288 muestras
+Invoke-RestMethod "http://127.0.0.1:8001/api/v1/inverters/ZFEDCA6003/energy?granularity=hour&date_from=2026-05-28&aggregate=true" -Headers $H
 ```
 
 ---

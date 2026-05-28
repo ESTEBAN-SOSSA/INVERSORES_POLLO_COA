@@ -190,8 +190,11 @@ $H = @{ "X-API-Key" = "PRUEBAS_GROWATT_INVERSORES" }
 # Inversores de la planta
 Invoke-RestMethod "http://127.0.0.1:8001/api/v1/plants/<PLANT_ID>/inverters" -Headers $H
 
-# HOUR → 288 puntos (sample_time HH:MM:SS + power_w) — igual al chart del portal
+# HOUR → 288 puntos planos (reading_date, sample_time HH:MM, power_w) — igual al chart del portal
 Invoke-RestMethod "http://127.0.0.1:8001/api/v1/inverters/<SN>/energy?granularity=hour&date_from=2026-05-26" -Headers $H
+
+# HOUR con aggregate=true → resumen por hora (energy_kwh, peak_power_w, avg_power_w)
+Invoke-RestMethod "http://127.0.0.1:8001/api/v1/inverters/<SN>/energy?granularity=hour&date_from=2026-05-26&aggregate=true" -Headers $H
 
 # DAY / MONTH / YEAR → energy_kwh por período
 Invoke-RestMethod "http://127.0.0.1:8001/api/v1/inverters/<SN>/energy?granularity=day&date_from=2026-01-01" -Headers $H
@@ -200,7 +203,8 @@ Invoke-RestMethod "http://127.0.0.1:8001/api/v1/inverters/<SN>/energy?granularit
 ```
 
 Parámetros del endpoint `/inverters/{sn}/energy`: `granularity` (`hour|day|month|year`),
-`date_from`, `date_to`, `limit` (≤ 10000).
+`date_from`, `date_to`, `limit` (≤ 10000), `aggregate` (solo `hour`: `true` devuelve
+resumen horario en vez de las 288 muestras 5-min).
 
 ### Vía SQL directo
 
