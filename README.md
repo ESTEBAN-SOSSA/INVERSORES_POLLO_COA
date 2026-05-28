@@ -7,8 +7,13 @@ una API REST con autenticación por `X-API-Key`.
 > Foco de esta instancia: planta **POLLO COA** (`plant_id=1878757`, cuenta
 > Tronex_edemco, 9 inversores `max`).
 
-El paso a paso operativo (qué endpoints, qué cargas, qué columnas) está
-documentado en [`EXTRACCION_INVERSORES.md`](EXTRACCION_INVERSORES.md).
+Documentación:
+
+* [`EXTRACCION_INVERSORES.md`](EXTRACCION_INVERSORES.md) — runbook operativo
+  (cómo correr el scraper, qué endpoints, qué columnas).
+* [`CONSTRUCCION_SOLUCION.md`](CONSTRUCCION_SOLUCION.md) — bitácora de cómo se
+  construyó la solución (reconocimiento, login MD5, descubrimientos) y guía
+  para extenderla / escalarla.
 
 ---
 
