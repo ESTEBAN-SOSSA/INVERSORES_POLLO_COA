@@ -7,6 +7,11 @@
 > este runbook. Toda la información está verificada contra el código real del
 > proyecto (`src/scraper/*`).
 
+> **¿Cómo se construyó esto?** Para entender el reconocimiento del portal, por qué
+> el login funciona sin captcha, cómo se descubrió la estructura real de los charts
+> y cómo extender la solución a nuevas plantas/cuentas/métricas, ver
+> [`CONSTRUCCION_SOLUCION.md`](CONSTRUCCION_SOLUCION.md).
+
 ---
 
 ## 0. TL;DR — el comando que casi siempre vas a usar
