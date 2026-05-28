@@ -15,7 +15,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from src.api.deps import require_api_key
-from src.api.schemas import EnergyPoint, HourPoint, HourSample, InverterOut, PlantOut
+from src.api.schemas import EnergyPoint, HourAggregate, HourSample, InverterOut, PlantOut
 from src.db.base import get_db
 from src.db.models import Device, EnergyReading, Plant
 
@@ -55,6 +55,9 @@ def inverter_energy(
     date_from: date | None = None,
     date_to: date | None = None,
     limit: int = Query(10000, le=10000, ge=1),
+    aggregate: bool = Query(False, description="Sólo para granularity=hour: si "
+                            "True devuelve resumen por hora (energy_kwh/peak/avg) "
+                            "en vez de las 288 muestras 5-min."),
     db: Session = Depends(get_db),
 ):
     if db.get(Device, sn) is None:
@@ -85,18 +88,23 @@ def inverter_energy(
     rows = list(db.scalars(base))
 
     if granularity == "hour":
-        # Reconstruir 288 muestras 5-min (HH:MM:SS + power_w), igual al portal.
+        if aggregate:
+            return [HourAggregate(
+                reading_date=r.reading_date, reading_hour=r.reading_hour,
+                energy_kwh=r.energy_kwh, peak_power_w=r.peak_power_w,
+                avg_power_w=r.avg_power_w) for r in rows]
+        # Por defecto: 288 muestras 5-min planas {reading_date, sample_time, power_w}
+        # — formato idéntico al chart "Hour" del portal Growatt.
         samples: list[HourSample] = []
         for r in rows:
             five = (r.raw or {}).get("samples_5min_w") or []
             for i, w in enumerate(five):
                 total_min = r.reading_hour * 60 + i * 5
                 hh, mm = divmod(total_min, 60)
-                samples.append(HourSample(sample_time=f"{hh:02d}:{mm:02d}:00",
-                                          power_w=float(w)))
-        hours = [HourPoint(reading_date=r.reading_date, reading_hour=r.reading_hour,
-                           energy_kwh=r.energy_kwh, peak_power_w=r.peak_power_w,
-                           avg_power_w=r.avg_power_w) for r in rows]
-        return {"hours": hours, "samples": samples}
+                samples.append(HourSample(
+                    reading_date=r.reading_date,
+                    sample_time=f"{hh:02d}:{mm:02d}",
+                    power_w=float(w)))
+        return samples
 
     return [EnergyPoint(reading_date=r.reading_date, energy_kwh=r.energy_kwh) for r in rows]

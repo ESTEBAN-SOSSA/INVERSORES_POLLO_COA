@@ -29,12 +29,14 @@ class EnergyPoint(BaseModel):
 
 
 class HourSample(BaseModel):
-    """Muestra 5-min reconstruida (igual al chart del portal)."""
-    sample_time: str          # HH:MM:SS
+    """Muestra 5-min — formato idéntico al chart 'Hour' del portal Growatt."""
+    reading_date: date
+    sample_time: str          # HH:MM (00:00, 00:05, …, 23:55) — 288 puntos por día
     power_w: float
 
 
-class HourPoint(BaseModel):
+class HourAggregate(BaseModel):
+    """Resumen por hora (peak / avg / kWh) — disponible vía aggregate=true."""
     reading_date: date
     reading_hour: int
     energy_kwh: float | None = None
